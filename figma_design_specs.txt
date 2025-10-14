@@ -1,0 +1,188 @@
+======================================================================
+FIGMA DESIGN SPECIFICATIONS - EXTRACTION SUMMARY
+======================================================================
+
+Successfully connected to Figma MCP Server (Local Desktop App)
+Server: Figma Dev Mode MCP Server v1.0.0
+Session ID: Captured and maintained throughout session
+
+======================================================================
+AVAILABLE TOOLS
+======================================================================
+
+The Figma MCP server provides 6 tools for extracting design information:
+
+1. get_code
+   - Generate UI code for the currently selected node
+   - Returns code implementation
+
+2. get_variable_defs
+   - Get variable definitions for design tokens
+   - Returns reusable design values (colors, spacing, fonts, etc.)
+
+3. get_code_connect_map
+   - Maps Figma nodes to codebase components
+   - Requires Organization/Enterprise plan
+
+4. get_screenshot
+   - Generate screenshot of the selected node
+   - Returns PNG image data
+
+5. get_metadata
+   - Get node/page metadata in XML format
+   - Includes structure, IDs, types, names, positions, sizes
+
+6. create_design_system_rules
+   - Generate design system rules
+
+======================================================================
+EXTRACTED DESIGN SPECIFICATIONS
+======================================================================
+
+From the currently selected Figma component/frame:
+
+-------------------
+DESIGN VARIABLES
+-------------------
+
+Spacing Values:
+- 0: 0px
+- 8: 8px
+- 10: 10px
+- 12: 12px
+- 14: 14px
+- 16: 16px
+- 20: 20px
+
+Color Palette:
+- Background/1: #ffffff (White)
+- Foreground/1: #101012 (Nearly Black)
+- Foreground/2: #81828c (Gray)
+- Border/4: #e0e1e6 (Light Gray)
+- Button/Outline/Foreground/Rest: #101012
+- Button/Ghost/Foreground/Rest: #101012
+- Button/Primary Dark/Foreground/Rest: #ffffff
+
+Typography:
+- Body/Medium:
+  * Font Family: SF Pro
+  * Style: Regular
+  * Size: 16px
+  * Weight: 400
+  * Line Height: 24px
+
+- Label/Small/Semibold:
+  * Font Family: SF Pro
+  * Style: Semibold
+  * Size: 14px
+  * Weight: 600
+  * Line Height: 20px
+
+-------------------
+COMPONENT SCREENSHOT
+-------------------
+
+A screenshot has been successfully generated showing the visual design
+of the selected component. The image shows what appears to be a UI
+component with multiple buttons or controls using the design tokens
+specified above.
+
+======================================================================
+IMPLEMENTATION GUIDE
+======================================================================
+
+To implement this design in HTML/CSS:
+
+CSS Variables (Design Tokens):
+```css
+:root {
+  /* Spacing */
+  --spacing-0: 0px;
+  --spacing-8: 8px;
+  --spacing-10: 10px;
+  --spacing-12: 12px;
+  --spacing-14: 14px;
+  --spacing-16: 16px;
+  --spacing-20: 20px;
+
+  /* Colors - Background */
+  --color-bg-1: #ffffff;
+
+  /* Colors - Foreground */
+  --color-fg-1: #101012;
+  --color-fg-2: #81828c;
+
+  /* Colors - Border */
+  --color-border-4: #e0e1e6;
+
+  /* Colors - Button */
+  --color-btn-outline-fg: #101012;
+  --color-btn-ghost-fg: #101012;
+  --color-btn-primary-dark-fg: #ffffff;
+
+  /* Typography - Body */
+  --font-body-medium-family: 'SF Pro', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+  --font-body-medium-size: 16px;
+  --font-body-medium-weight: 400;
+  --font-body-medium-line-height: 24px;
+
+  /* Typography - Label */
+  --font-label-small-family: 'SF Pro', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+  --font-label-small-size: 14px;
+  --font-label-small-weight: 600;
+  --font-label-small-line-height: 20px;
+}
+```
+
+Typography Classes:
+```css
+.body-medium {
+  font-family: var(--font-body-medium-family);
+  font-size: var(--font-body-medium-size);
+  font-weight: var(--font-body-medium-weight);
+  line-height: var(--font-body-medium-line-height);
+}
+
+.label-small-semibold {
+  font-family: var(--font-label-small-family);
+  font-size: var(--font-label-small-size);
+  font-weight: var(--font-label-small-weight);
+  line-height: var(--font-label-small-line-height);
+}
+```
+
+Button Styles:
+```css
+.btn-outline {
+  color: var(--color-btn-outline-fg);
+  background: transparent;
+  border: 1px solid var(--color-border-4);
+}
+
+.btn-ghost {
+  color: var(--color-btn-ghost-fg);
+  background: transparent;
+  border: none;
+}
+
+.btn-primary-dark {
+  color: var(--color-btn-primary-dark-fg);
+  background: var(--color-fg-1);
+  border: none;
+}
+```
+
+======================================================================
+TECHNICAL DETAILS
+======================================================================
+
+Connection Method: HTTP with Session ID
+Protocol: MCP (Model Context Protocol) v2024-11-05
+Transport: HTTP with SSE (Server-Sent Events)
+
+Key Implementation Detail:
+The Figma MCP server uses a custom session management system via
+the 'mcp-session-id' header. This session ID must be captured from
+the initialize response and included in all subsequent requests.
+
+======================================================================
