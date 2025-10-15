@@ -25,6 +25,17 @@ wheels/
 
 # Environment variables
 .env
+.env*.local
+
+# Next.js
+.next/
+out/
+build/
+*.tsbuildinfo
+next-env.d.ts
+
+# Dependencies
+node_modules/
 
 # IDE
 .vscode/
