@@ -7,13 +7,10 @@ __pycache__/
 env/
 venv/
 ENV/
-build/
 develop-eggs/
-dist/
 downloads/
 eggs/
 .eggs/
-lib/
 lib64/
 parts/
 sdist/
@@ -22,6 +19,10 @@ wheels/
 *.egg-info/
 .installed.cfg
 *.egg
+
+# Python build artifacts (but not our lib/ source directory)
+/build/
+/dist/
 
 # Environment variables
 .env
