@@ -5,15 +5,11 @@ import './globals.css';
 const inter = Inter({ subsets: ['latin'] });
 
 export const metadata: Metadata = {
-  title: 'YouSearch - The world\'s fastest web search API for LLMs',
+  title: "YouSearch - The world's fastest web search API for LLMs",
   description: 'Power your LLM applications with fresh, accurate use data through a simple API.',
 };
 
-export default function RootLayout({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
+export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en">
       <body className={inter.className}>{children}</body>

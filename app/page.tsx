@@ -18,7 +18,7 @@ export default function Home() {
   const featureExamples = [
     'Best new restaurants in NYC',
     'Latest news on NVIDIA',
-    'Trump\'s latest policies on trade and tariffs',
+    "Trump's latest policies on trade and tariffs",
     'Startup Series A or B rounds in 2025',
   ];
 
@@ -51,9 +51,7 @@ export default function Home() {
 
     try {
       const startTime = performance.now();
-      const response = await fetch(
-        `/api/search?q=${encodeURIComponent(query)}&format=json`
-      );
+      const response = await fetch(`/api/search?q=${encodeURIComponent(query)}&format=json`);
       const endTime = performance.now();
       setSearchTime((endTime - startTime) / 1000);
 
@@ -66,7 +64,7 @@ export default function Home() {
 
       const data: SearchAPIResponse = await response.json();
       setResults(data);
-      (window as any).lastSearchData = data;
+      window.lastSearchData = data;
 
       // Scroll to results after they load
       setTimeout(() => {
@@ -118,7 +116,8 @@ export default function Home() {
                 alt=""
                 onError={(e) => {
                   e.currentTarget.style.display = 'none';
-                  e.currentTarget.parentElement!.innerHTML = '<span style="font-size: 16px;">🔍</span>';
+                  e.currentTarget.parentElement!.innerHTML =
+                    '<span style="font-size: 16px;">🔍</span>';
                 }}
               />
             ) : (
@@ -126,20 +125,13 @@ export default function Home() {
             )}
           </div>
           <div className="result-content">
-            <a
-              href={result.url}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="result-title"
-            >
+            <a href={result.url} target="_blank" rel="noopener noreferrer" className="result-title">
               {result.title || 'No title'}
             </a>
             <div className="result-url">{result.url}</div>
           </div>
         </div>
-        {result.description && (
-          <div className="result-description">{result.description}</div>
-        )}
+        {result.description && <div className="result-description">{result.description}</div>}
         {result.snippets && result.snippets.length > 0 && (
           <div className="result-snippets">
             <button
@@ -149,9 +141,7 @@ export default function Home() {
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
                 <path d="M19 9l-7 7-7-7" />
               </svg>
-              <span>
-                {showSnippets ? 'Hide context snippets' : 'Show context snippets'}
-              </span>
+              <span>{showSnippets ? 'Hide context snippets' : 'Show context snippets'}</span>
             </button>
             <div className={`snippets-content ${showSnippets ? '' : 'hidden'}`}>
               {result.snippets.slice(0, 5).map((snippet, idx) => (
@@ -182,17 +172,11 @@ export default function Home() {
       </nav>
 
       {/* Hero Section */}
-      <div
-        className="hero-container"
-        style={hasSearched ? { minHeight: '150px' } : undefined}
-      >
+      <div className="hero-container" style={hasSearched ? { minHeight: '150px' } : undefined}>
         <main className="hero-content">
-          <h1 className="hero-title">
-            The world&apos;s fastest web search API for LLMs
-          </h1>
+          <h1 className="hero-title">The world&apos;s fastest web search API for LLMs</h1>
           <p className="hero-subtitle">
-            Power your LLM applications with fresh, accurate use data through a
-            simple API.
+            Power your LLM applications with fresh, accurate use data through a simple API.
           </p>
 
           {/* Search Box */}
@@ -209,13 +193,7 @@ export default function Home() {
                   autoFocus
                 />
                 <button type="submit" className="search-button" aria-label="Search">
-                  <svg
-                    width="20"
-                    height="20"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                  >
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor">
                     <circle cx="11" cy="11" r="8"></circle>
                     <path d="m21 21-4.35-4.35"></path>
                   </svg>
@@ -238,7 +216,6 @@ export default function Home() {
               ))}
             </div>
           )}
-
         </main>
       </div>
 
@@ -256,17 +233,13 @@ export default function Home() {
               </div>
               <div className="view-toggle">
                 <button
-                  className={`view-toggle-btn ${
-                    currentView === 'visual' ? 'active' : ''
-                  }`}
+                  className={`view-toggle-btn ${currentView === 'visual' ? 'active' : ''}`}
                   onClick={() => setCurrentView('visual')}
                 >
                   Visual
                 </button>
                 <button
-                  className={`view-toggle-btn ${
-                    currentView === 'code' ? 'active' : ''
-                  }`}
+                  className={`view-toggle-btn ${currentView === 'code' ? 'active' : ''}`}
                   onClick={() => setCurrentView('code')}
                 >
                   Code
@@ -324,9 +297,7 @@ export default function Home() {
               ) : (
                 <>
                   <h2 className="section-title">JSON Response</h2>
-                  <pre className="raw-output">
-                    {JSON.stringify(results, null, 2)}
-                  </pre>
+                  <pre className="raw-output">{JSON.stringify(results, null, 2)}</pre>
                 </>
               )}
             </div>
@@ -345,11 +316,7 @@ export default function Home() {
                     onChange={(e) => setSearchQuery(e.target.value)}
                     autoComplete="off"
                   />
-                  <button
-                    type="submit"
-                    className="floating-search-btn"
-                    aria-label="Scroll to top"
-                  >
+                  <button type="submit" className="floating-search-btn" aria-label="Scroll to top">
                     <svg
                       width="20"
                       height="20"
