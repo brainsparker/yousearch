@@ -86,7 +86,7 @@ Create a `.env.local` file:
 YOU_API_KEY=your_api_key_here
 ```
 
-Get your API key at [You.com API](https://api.you.com/)
+Get your API key at [You.com Platform](https://you.com/platform)
 
 ## Project Structure
 
@@ -125,7 +125,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 ## Support
 
 - **Issues**: [GitHub Issues](https://github.com/yourusername/yousearch/issues)
-- **API Key**: [You.com API](https://api.you.com/)
+- **API Key**: [You.com Platform](https://you.com/platform)
 - **Documentation**: [You.com API Docs](https://documentation.you.com/)
 
 ---

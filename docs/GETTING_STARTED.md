@@ -9,7 +9,7 @@ Before you begin, ensure you have the following installed:
 - **Node.js** 18.0 or higher ([Download](https://nodejs.org/))
 - **npm** (comes with Node.js)
 - **Git** (for cloning the repository)
-- **You.com API Key** ([Get one here](https://api.you.com/))
+- **You.com API Key** ([Get one here](https://you.com/platform))
 
 ## Installation
 
@@ -206,7 +206,7 @@ npm install
 ## Getting Help
 
 - **Issues**: Report bugs on [GitHub Issues](https://github.com/yourusername/yousearch/issues)
-- **API Documentation**: [You.com API Docs](https://documentation.you.com/)
+- **API Documentation**: [You.com Platform Docs](https://documentation.you.com/)
 - **Community**: Join discussions in GitHub Discussions
 
 ## Learn More
