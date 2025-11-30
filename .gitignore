@@ -47,3 +47,6 @@ node_modules/
 # OS
 .DS_Store
 Thumbs.db
+
+# Legacy code (archived for reference)
+legacy/
