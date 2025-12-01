@@ -1,4 +1,4 @@
-/* Modern Search Interface - Based on You.com Platform Design */
+/* Modern Search Interface - Adaptive Theme System */
 
 * {
   margin: 0;
@@ -7,79 +7,81 @@
 }
 
 :root {
-  /* Figma Design Tokens - Spacing */
-  --spacing-0: 0px;
-  --spacing-8: 8px;
-  --spacing-10: 10px;
-  --spacing-12: 12px;
-  --spacing-14: 14px;
-  --spacing-16: 16px;
-  --spacing-20: 20px;
+  /* Spacing System */
+  --spacing-xs: 4px;
+  --spacing-sm: 8px;
+  --spacing-md: 12px;
+  --spacing-lg: 16px;
+  --spacing-xl: 24px;
+  --spacing-2xl: 32px;
+  --spacing-3xl: 48px;
+  --spacing-4xl: 64px;
 
-  /* Figma Design Tokens - Colors */
-  --color-bg-1: #ffffff;
-  --color-fg-1: #101012;
-  --color-fg-2: #81828c;
-  --color-border-4: #e0e1e6;
-  --color-btn-outline-fg: #101012;
-  --color-btn-ghost-fg: #101012;
-  --color-btn-primary-dark-fg: #ffffff;
+  /* Light Theme (Default) */
+  --bg-primary: #ffffff;
+  --bg-secondary: #f9fafb;
+  --text-primary: #0f172a;
+  --text-secondary: #64748b;
+  --text-tertiary: #94a3b8;
+  --border: #e2e8f0;
+  --accent: #3b82f6;
+  --accent-hover: #2563eb;
+  --success: #10b981;
+  --error: #ef4444;
+  --warning: #f59e0b;
 
-  /* Figma Design Tokens - Typography */
-  --font-body-medium-family:
-    'SF Pro', 'Inter', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
-  --font-body-medium-size: 16px;
-  --font-body-medium-weight: 400;
-  --font-body-medium-line-height: 24px;
-  --font-label-small-family:
-    'SF Pro', 'Inter', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
-  --font-label-small-size: 14px;
-  --font-label-small-weight: 600;
-  --font-label-small-line-height: 20px;
+  /* Elevation System */
+  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.1);
+  --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.1);
+  --shadow-lg: 0 10px 15px rgba(0, 0, 0, 0.1);
+  --shadow-xl: 0 20px 25px rgba(0, 0, 0, 0.1);
 
-  /* Extended Color Palette (keeping existing for gradients) */
-  --gradient-start: #e8eeff;
-  --gradient-mid: #d4ddff;
-  --gradient-end: #c1d1ff;
-  --primary-purple: #6366f1;
-  --primary-dark: #4f46e5;
-  --text-primary: var(--color-fg-1);
-  --text-secondary: var(--color-fg-2);
-  --white: var(--color-bg-1);
-  --card-bg: rgba(255, 255, 255, 0.9);
-  --card-border: rgba(99, 102, 241, 0.1);
-  --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
-  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
-  --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+  /* Typography */
+  --font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+}
+
+/* Dark Theme */
+[data-theme='dark'] {
+  --bg-primary: #0f172a;
+  --bg-secondary: #1e293b;
+  --text-primary: #ffffff;
+  --text-secondary: #cbd5e1;
+  --text-tertiary: #94a3b8;
+  --border: #334155;
+  --accent: #60a5fa;
+  --accent-hover: #3b82f6;
+  --success: #34d399;
+  --error: #f87171;
+  --warning: #fcd34d;
+
+  /* Adjusted shadows for dark mode */
+  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.3);
+  --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.3);
+  --shadow-lg: 0 10px 15px rgba(0, 0, 0, 0.3);
+  --shadow-xl: 0 20px 25px rgba(0, 0, 0, 0.3);
 }
 
 body {
-  font-family:
-    'Inter',
-    -apple-system,
-    BlinkMacSystemFont,
-    'Segoe UI',
-    Roboto,
-    sans-serif;
-  background: linear-gradient(
-    135deg,
-    var(--gradient-start) 0%,
-    var(--gradient-mid) 50%,
-    var(--gradient-end) 100%
-  );
+  font-family: var(--font-family);
+  background: var(--bg-primary);
   color: var(--text-primary);
   line-height: 1.6;
   min-height: 100vh;
   display: flex;
   flex-direction: column;
+  transition:
+    background-color 0.3s ease,
+    color 0.3s ease;
 }
 
 /* Navigation Bar */
 .navbar {
-  background: rgba(255, 255, 255, 0.8);
+  background: var(--bg-primary);
   backdrop-filter: blur(10px);
-  border-bottom: 1px solid rgba(99, 102, 241, 0.1);
+  border-bottom: 1px solid var(--border);
+  transition:
+    background-color 0.3s ease,
+    border-color 0.3s ease;
 }
 
 .nav-content {
@@ -171,24 +173,23 @@ body {
 }
 
 .search-box {
-  background: var(--white);
+  background: var(--bg-primary);
   border-radius: 12px;
   padding: 0.75rem 1.5rem;
   display: flex;
   align-items: center;
   gap: 1rem;
-  box-shadow: var(--shadow-xl);
-  border: 1px solid rgba(99, 102, 241, 0.1);
-  transition: all 0.3s ease;
+  box-shadow: var(--shadow-lg);
+  border: 2px solid var(--border);
+  transition: all 0.2s ease;
   max-width: 700px;
   margin: 0 auto;
 }
 
 .search-box:focus-within {
-  box-shadow:
-    0 20px 25px -5px rgba(99, 102, 241, 0.15),
-    0 10px 10px -5px rgba(99, 102, 241, 0.05);
-  border-color: var(--primary-purple);
+  border-color: var(--accent);
+  box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.1);
+  transform: scale(1.01);
 }
 
 .search-input {
@@ -461,17 +462,17 @@ body {
 
 /* Result Items */
 .result-item {
-  background: rgba(255, 255, 255, 0.95);
-  backdrop-filter: blur(10px);
-  border: 1px solid rgba(99, 102, 241, 0.1);
-  border-radius: 16px;
+  background: var(--bg-secondary);
+  border: 1px solid var(--border);
+  border-radius: 12px;
   padding: 1.75rem;
   transition: all 0.2s ease;
 }
 
 .result-item:hover {
-  box-shadow: var(--shadow-md);
-  border-color: rgba(99, 102, 241, 0.15);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-lg);
+  border-color: var(--accent);
 }
 
 .result-header {

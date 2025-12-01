@@ -1,0 +1,91 @@
+.container {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 2rem;
+}
+
+.skeletons {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.skeleton {
+  background: var(--bg-secondary);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 1.5rem;
+  animation: pulse 1.5s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.6;
+  }
+}
+
+.skeletonHeader {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 1rem;
+}
+
+.skeletonIcon {
+  width: 24px;
+  height: 24px;
+  background: var(--border);
+  border-radius: 4px;
+}
+
+.skeletonBadge {
+  width: 32px;
+  height: 20px;
+  background: var(--border);
+  border-radius: 4px;
+}
+
+.skeletonTitle {
+  height: 24px;
+  background: var(--border);
+  border-radius: 6px;
+  margin-bottom: 0.75rem;
+  width: 70%;
+}
+
+.skeletonUrl {
+  height: 16px;
+  background: var(--border);
+  border-radius: 4px;
+  margin-bottom: 1rem;
+  width: 50%;
+}
+
+.skeletonText {
+  height: 18px;
+  background: var(--border);
+  border-radius: 4px;
+  margin-bottom: 0.5rem;
+  width: 100%;
+}
+
+.skeletonTextShort {
+  height: 18px;
+  background: var(--border);
+  border-radius: 4px;
+  width: 80%;
+}
+
+@media (max-width: 768px) {
+  .container {
+    padding: 1rem;
+  }
+
+  .skeleton {
+    padding: 1.25rem;
+  }
+}

@@ -1,0 +1,30 @@
+.meta {
+  display: flex;
+  align-items: center;
+  gap: 2rem;
+  padding: 1rem 0;
+  margin-bottom: 1.5rem;
+  color: var(--text-secondary);
+  font-size: 0.875rem;
+}
+
+.count,
+.time {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.count svg,
+.time svg {
+  width: 18px;
+  height: 18px;
+  color: var(--accent);
+}
+
+@media (max-width: 768px) {
+  .meta {
+    gap: 1rem;
+    font-size: 0.8125rem;
+  }
+}
