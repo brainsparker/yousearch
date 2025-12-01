@@ -6,9 +6,10 @@ import styles from './SearchResults.module.css';
 interface SearchResultsProps {
   results: SearchResult[];
   searchTime?: number;
+  onFollowUp?: (query: string) => void;
 }
 
-export function SearchResults({ results, searchTime }: SearchResultsProps) {
+export function SearchResults({ results, searchTime, onFollowUp }: SearchResultsProps) {
   if (results.length === 0) {
     return null;
   }
@@ -19,7 +20,7 @@ export function SearchResults({ results, searchTime }: SearchResultsProps) {
 
       <div className={styles.results}>
         {results.map((result, index) => (
-          <ResultCard key={result.url} result={result} index={index} />
+          <ResultCard key={result.url} result={result} index={index} onFollowUp={onFollowUp} />
         ))}
       </div>
     </div>

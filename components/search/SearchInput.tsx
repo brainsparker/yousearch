@@ -45,7 +45,7 @@ export function SearchInput({ onSearch, initialQuery = '', isLoading = false }: 
           type="text"
           value={query}
           onChange={(e) => setQuery(e.target.value)}
-          placeholder="Search the web..."
+          placeholder="Ask anything..."
           className={styles.input}
           disabled={isLoading}
           autoFocus

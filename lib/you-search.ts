@@ -21,6 +21,9 @@ export interface SearchResult {
   description?: string;
   snippets?: string[];
   favicon_url?: string;
+  age?: string; // Relative time like "2 hours ago", "1 day ago"
+  page_age?: string; // ISO 8601 date from API
+  thumbnail_url?: string; // For preview images
 }
 
 /**
@@ -45,7 +48,7 @@ export interface SearchAPIResponse {
  * Client for interacting with the You.com Search API
  */
 export class YouSearchClient {
-  private static readonly BASE_URL = 'https://api.ydc-index.io/v1/search';
+  private static readonly BASE_URL = 'https://ydc-index.io/v1/search';
   private apiKey: string;
 
   /**

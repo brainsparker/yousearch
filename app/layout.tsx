@@ -7,8 +7,8 @@ import { Header } from '@/components/layout/Header';
 const inter = Inter({ subsets: ['latin'] });
 
 export const metadata: Metadata = {
-  title: "YouSearch - The world's fastest web search API for LLMs",
-  description: 'Power your LLM applications with fresh, accurate use data through a simple API.',
+  title: 'AI Search - Where knowledge begins',
+  description: 'Fast, accurate web search powered by AI. Get instant answers from across the web.',
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {

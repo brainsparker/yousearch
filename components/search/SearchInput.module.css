@@ -6,20 +6,19 @@
 
 .searchBox {
   background: var(--bg-primary);
-  border: 2px solid var(--border);
-  border-radius: 12px;
-  padding: 0.75rem 1rem;
+  border: 1px solid var(--border);
+  border-radius: 32px;
+  padding: 0.875rem 1.25rem;
   display: flex;
   align-items: center;
-  gap: 0.75rem;
-  box-shadow: var(--shadow-lg);
+  gap: 0.875rem;
+  box-shadow: var(--shadow-md);
   transition: all 0.2s ease;
 }
 
 .searchBox:focus-within {
   border-color: var(--accent);
-  box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.1);
-  transform: scale(1.01);
+  box-shadow: var(--shadow-lg);
 }
 
 .searchIcon {
@@ -35,7 +34,7 @@
   outline: none;
   background: transparent;
   color: var(--text-primary);
-  font-size: 1.125rem;
+  font-size: 1rem;
   font-family: inherit;
 }
 
