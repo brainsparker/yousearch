@@ -198,10 +198,10 @@ npm install
 
 ## Next Steps
 
+- Read the [Alignment Document](../ALIGNMENT.md) to understand the project goals
 - Read the [Architecture Guide](ARCHITECTURE.md) to understand the system
 - Check out the [API Documentation](API.md) for endpoint details
 - See [Contributing Guidelines](CONTRIBUTING.md) to contribute
-- Review the [Deployment Guide](DEPLOYMENT.md) for production deployment
 
 ## Getting Help
 

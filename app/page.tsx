@@ -99,10 +99,10 @@ export default function Home() {
   };
 
   const exampleQueries = [
-    'Latest AI developments',
-    'Best restaurants in Tokyo',
-    'How to learn TypeScript',
-    'Climate change solutions',
+    'What are the latest AI breakthroughs?',
+    'How does RAG improve LLM accuracy?',
+    'Best practices for API design',
+    'Compare React vs Vue in 2025',
   ];
 
   const handleExampleClick = (query: string) => {
@@ -114,7 +114,8 @@ export default function Home() {
       <main className={styles.main}>
         {!hasSearched ? (
           <div className={styles.hero}>
-            <h1 className={styles.title}>Where knowledge begins</h1>
+            <h1 className={styles.title}>Real-time search for humans and AI</h1>
+            <p className={styles.subtitle}>Fresh web results. Clean interface. LLM-ready API.</p>
 
             <div className={styles.searchContainer}>
               <SearchInput onSearch={handleSearch} isLoading={loading} />
@@ -133,6 +134,43 @@ export default function Home() {
                 ))}
               </div>
             )}
+
+            <div className={styles.features}>
+              <div className={styles.featureCard}>
+                <div className={styles.featureIcon}>
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                    <circle cx="12" cy="12" r="10" />
+                    <path d="M12 6v6l4 2" />
+                  </svg>
+                </div>
+                <div className={styles.featureText}>
+                  <strong>Real-time data</strong>
+                  <span>Fresh results from the live web</span>
+                </div>
+              </div>
+              <div className={styles.featureCard}>
+                <div className={styles.featureIcon}>
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                    <path d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4" />
+                  </svg>
+                </div>
+                <div className={styles.featureText}>
+                  <strong>LLM-ready API</strong>
+                  <span>JSON and text formats for AI</span>
+                </div>
+              </div>
+              <div className={styles.featureCard}>
+                <div className={styles.featureIcon}>
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                    <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+                  </svg>
+                </div>
+                <div className={styles.featureText}>
+                  <strong>Privacy-first</strong>
+                  <span>No tracking, open source</span>
+                </div>
+              </div>
+            </div>
           </div>
         ) : (
           <div className={styles.compactHero}>
