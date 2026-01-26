@@ -165,6 +165,40 @@ CMD ["npm", "start"]
 
 Any platform supporting Node.js 18+ works. Set `YOU_API_KEY` as environment variable.
 
+## MCP Server (Claude Desktop)
+
+YouSearch includes an MCP server for integration with Claude Desktop and other MCP-compliant hosts.
+
+### Quick Setup
+
+```bash
+cd mcp-server
+npm install
+npm run build
+```
+
+### Configure Claude Desktop
+
+Add to your Claude Desktop MCP configuration:
+
+```json
+{
+  "mcpServers": {
+    "yousearch": {
+      "command": "node",
+      "args": ["/path/to/yousearch/mcp-server/dist/main.js"],
+      "env": {
+        "YOU_API_KEY": "your-api-key-here"
+      }
+    }
+  }
+}
+```
+
+Then use the `you_search` tool in Claude Desktop to search the web with rich, interactive results.
+
+See [mcp-server/README.md](mcp-server/README.md) for full documentation.
+
 ## Use Cases
 
 ### RAG (Retrieval-Augmented Generation)

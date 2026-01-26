@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>YouSearch Results</title>
+  <link rel="stylesheet" href="./src/styles.css">
+</head>
+<body>
+  <div id="app">
+    <div class="search-container">
+      <div class="search-box">
+        <svg class="search-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="11" cy="11" r="8"/>
+          <path d="M21 21l-4.35-4.35"/>
+        </svg>
+        <input type="text" id="search-input" placeholder="Search the web..." autocomplete="off">
+        <button id="search-button" type="button">Search</button>
+      </div>
+    </div>
+    <div id="results-header"></div>
+    <div id="results-container"></div>
+    <div id="loading" class="loading hidden">
+      <div class="spinner"></div>
+      <span>Searching...</span>
+    </div>
+    <div id="error" class="error hidden"></div>
+  </div>
+  <script type="module" src="./src/mcp-app.ts"></script>
+</body>
+</html>
