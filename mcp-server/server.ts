@@ -43,22 +43,97 @@ export interface SearchResponse {
 }
 
 /**
+ * Demo mode mock results
+ */
+function getMockResults(query: string): SearchResponse {
+  return {
+    results: {
+      web: [
+        {
+          title: `${query} - Wikipedia`,
+          url: `https://en.wikipedia.org/wiki/${encodeURIComponent(query.replace(/\s+/g, '_'))}`,
+          description: `This is a demo result for "${query}". Configure YOU_API_KEY for real search results from You.com.`,
+          snippets: [
+            `Demo snippet 1: Learn more about ${query} and related topics.`,
+            `Demo snippet 2: This result is simulated for testing purposes.`,
+          ],
+          favicon_url: 'https://en.wikipedia.org/favicon.ico',
+          age: 'Demo mode',
+        },
+        {
+          title: `Understanding ${query} - A Complete Guide`,
+          url: `https://example.com/guide/${encodeURIComponent(query)}`,
+          description: `Comprehensive guide to ${query}. This is a mock result - set YOU_API_KEY for real results.`,
+          snippets: [`Everything you need to know about ${query}.`],
+          favicon_url: 'https://example.com/favicon.ico',
+          age: '2 hours ago',
+        },
+        {
+          title: `${query} Tutorial for Beginners`,
+          url: `https://tutorial.example.com/${encodeURIComponent(query)}`,
+          description: `Step-by-step tutorial on ${query}. Demo mode is active - real results require an API key.`,
+          snippets: [
+            `Getting started with ${query} is easier than you think.`,
+            `Follow along with practical examples.`,
+          ],
+          favicon_url: 'https://tutorial.example.com/favicon.ico',
+          age: '1 day ago',
+        },
+        {
+          title: `Latest News: ${query}`,
+          url: `https://news.example.com/topic/${encodeURIComponent(query)}`,
+          description: `Recent developments and news about ${query}. Running in demo mode without API key.`,
+          snippets: [`Breaking: New discoveries about ${query} announced today.`],
+          favicon_url: 'https://news.example.com/favicon.ico',
+          age: '30 minutes ago',
+        },
+        {
+          title: `${query} - Official Documentation`,
+          url: `https://docs.example.com/${encodeURIComponent(query)}`,
+          description: `Official documentation and reference for ${query}. Get a free API key at you.com/platform for real results.`,
+          snippets: [
+            `Full API reference for ${query}.`,
+            `Code examples and best practices included.`,
+          ],
+          favicon_url: 'https://docs.example.com/favicon.ico',
+          age: '1 week ago',
+        },
+      ],
+      news: [
+        {
+          title: `[DEMO] ${query} Makes Headlines`,
+          url: `https://news.example.com/${encodeURIComponent(query)}`,
+          description: `This is a demo news result. Set YOU_API_KEY environment variable for real news from You.com.`,
+          age: 'Demo mode',
+        },
+      ],
+    },
+  };
+}
+
+/**
  * You.com Search API client
  */
 class YouSearchClient {
   private static readonly BASE_URL = 'https://ydc-index.io/v1/search';
   private apiKey: string;
+  private demoMode: boolean;
 
   constructor(apiKey?: string) {
     this.apiKey = apiKey || process.env.YOU_API_KEY || '';
-    if (!this.apiKey) {
-      throw new Error(
-        'API key is required. Set YOU_API_KEY environment variable or pass api_key parameter'
-      );
-    }
+    this.demoMode = !this.apiKey;
+  }
+
+  isDemoMode(): boolean {
+    return this.demoMode;
   }
 
   async search(query: string, numResults: number = 10): Promise<SearchResponse> {
+    // Return mock results if no API key
+    if (this.demoMode) {
+      return getMockResults(query);
+    }
+
     const headers = {
       'X-API-Key': this.apiKey,
     };
@@ -149,14 +224,18 @@ export function createServer(): Server {
     }
   );
 
+  // Check if running in demo mode
+  const demoMode = !process.env.YOU_API_KEY;
+
   // Register tools
   server.setRequestHandler(ListToolsRequestSchema, async () => {
     return {
       tools: [
         {
           name: 'you_search',
-          description:
-            'Search the web using You.com Search API. Returns web results with titles, URLs, descriptions, and snippets.',
+          description: demoMode
+            ? 'Search the web (DEMO MODE - returns mock results). Set YOU_API_KEY for real results from You.com.'
+            : 'Search the web using You.com Search API. Returns web results with titles, URLs, descriptions, and snippets.',
           inputSchema: {
             type: 'object' as const,
             properties: {
@@ -196,7 +275,14 @@ export function createServer(): Server {
       lastSearchQuery = query;
 
       // Format for LLM consumption
-      const textContent = client.formatResultsForLLM(results);
+      let textContent = client.formatResultsForLLM(results);
+
+      // Add demo mode notice
+      if (client.isDemoMode()) {
+        textContent =
+          '=== DEMO MODE ===\nNo API key configured. Showing mock results.\nGet a free API key at https://you.com/platform\n\n' +
+          textContent;
+      }
 
       // Count results
       const webCount = results.results?.web?.length || 0;
@@ -217,6 +303,7 @@ export function createServer(): Server {
             web: webCount,
             news: newsCount,
           },
+          demoMode: client.isDemoMode(),
         },
         isError: false,
       };

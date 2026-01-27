@@ -15,7 +15,13 @@ async function main() {
   await server.connect(transport);
 
   // Log to stderr so it doesn't interfere with stdio protocol
-  console.error('YouSearch MCP server started');
+  const demoMode = !process.env.YOU_API_KEY;
+  if (demoMode) {
+    console.error('YouSearch MCP server started (DEMO MODE - no API key)');
+    console.error('Set YOU_API_KEY for real results: https://you.com/platform');
+  } else {
+    console.error('YouSearch MCP server started');
+  }
 }
 
 main().catch((error) => {
