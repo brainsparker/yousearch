@@ -1,7 +1,7 @@
 {
   "name": "yousearch",
   "version": "1.0.0",
-  "description": "Open Source AI Search Engine powered by You.com API",
+  "description": "Open-source search engine template powered by You.com API",
   "scripts": {
     "dev": "next dev",
     "build": "next build",
@@ -10,8 +10,7 @@
     "lint:fix": "next lint --fix",
     "format": "prettier --write \"**/*.{ts,tsx,js,jsx,json,css,md}\"",
     "format:check": "prettier --check \"**/*.{ts,tsx,js,jsx,json,css,md}\"",
-    "type-check": "tsc --noEmit",
-    "prepare": "husky"
+    "type-check": "tsc --noEmit"
   },
   "dependencies": {
     "next": "^15.0.0",
@@ -28,20 +27,10 @@
     "eslint": "^9.39.1",
     "eslint-config-next": "^16.0.5",
     "eslint-config-prettier": "^10.1.8",
-    "husky": "^9.1.7",
-    "lint-staged": "^16.2.7",
     "prettier": "^3.7.3",
     "typescript": "^5.3.0"
   },
   "engines": {
     "node": ">=18.0.0"
-  },
-  "lint-staged": {
-    "*.{ts,tsx}": [
-      "prettier --write"
-    ],
-    "*.{json,css,md}": [
-      "prettier --write"
-    ]
   }
 }

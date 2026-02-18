@@ -5,24 +5,40 @@ import styles from './SearchResults.module.css';
 
 interface SearchResultsProps {
   results: SearchResult[];
+  newsResults?: SearchResult[];
   searchTime?: number;
-  onFollowUp?: (query: string) => void;
+  apiLatency?: number;
 }
 
-export function SearchResults({ results, searchTime, onFollowUp }: SearchResultsProps) {
-  if (results.length === 0) {
+export function SearchResults({ results, newsResults, searchTime, apiLatency }: SearchResultsProps) {
+  if (results.length === 0 && (!newsResults || newsResults.length === 0)) {
     return null;
   }
 
   return (
     <div className={styles.container}>
-      <ResultMeta resultCount={results.length} searchTime={searchTime} />
+      <ResultMeta
+        resultCount={results.length}
+        searchTime={searchTime}
+        apiLatency={apiLatency}
+      />
 
       <div className={styles.results}>
         {results.map((result, index) => (
-          <ResultCard key={result.url} result={result} index={index} onFollowUp={onFollowUp} />
+          <ResultCard key={result.url} result={result} index={index} />
         ))}
       </div>
+
+      {newsResults && newsResults.length > 0 && (
+        <>
+          <h2 className={styles.sectionTitle}>News</h2>
+          <div className={styles.results}>
+            {newsResults.map((result, index) => (
+              <ResultCard key={result.url} result={result} index={index} />
+            ))}
+          </div>
+        </>
+      )}
     </div>
   );
 }

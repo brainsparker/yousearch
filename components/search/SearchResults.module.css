@@ -20,6 +20,14 @@
   gap: 1.25rem;
 }
 
+.sectionTitle {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-top: 2rem;
+  margin-bottom: 1rem;
+}
+
 @media (max-width: 768px) {
   .container {
     padding: 1rem;

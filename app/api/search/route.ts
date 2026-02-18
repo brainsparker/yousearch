@@ -1,5 +1,23 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { YouSearchClient } from '@/lib/you-search';
+import type { SearchOptions } from '@/lib/you-search';
+
+function extractOptions(params: URLSearchParams): SearchOptions {
+  const options: SearchOptions = {};
+  const count = params.get('count');
+  if (count) options.count = parseInt(count, 10);
+  const freshness = params.get('freshness');
+  if (freshness) options.freshness = freshness;
+  const offset = params.get('offset');
+  if (offset) options.offset = parseInt(offset, 10);
+  const country = params.get('country');
+  if (country) options.country = country;
+  const language = params.get('language');
+  if (language) options.language = language;
+  const safesearch = params.get('safesearch');
+  if (safesearch) options.safesearch = safesearch as SearchOptions['safesearch'];
+  return options;
+}
 
 export async function GET(request: NextRequest) {
   const searchParams = request.nextUrl.searchParams;
@@ -16,9 +34,24 @@ export async function GET(request: NextRequest) {
     );
   }
 
+  const options = extractOptions(searchParams);
+
+  let client: YouSearchClient;
   try {
-    const client = new YouSearchClient();
-    const results = await client.search(query);
+    client = new YouSearchClient();
+  } catch {
+    return NextResponse.json(
+      {
+        error: 'missing_api_key',
+        message:
+          'You.com API key is not configured. Add YOU_API_KEY to your .env.local file. Get a free key at https://you.com/platform',
+      },
+      { status: 503 }
+    );
+  }
+
+  try {
+    const results = await client.search(query, options);
 
     if (format === 'text' || format === 'llm') {
       const formattedText = client.formatResultsForLLM(results);
@@ -30,22 +63,14 @@ export async function GET(request: NextRequest) {
       });
     }
 
+    // Flatten the response: { query, results: { web, news }, metadata }
     return NextResponse.json({
       query,
-      results,
+      results: results.results || {},
+      metadata: results.metadata,
     });
   } catch (error) {
     const errorMessage = error instanceof Error ? error.message : 'Unknown error';
-
-    if (errorMessage.includes('API key')) {
-      return NextResponse.json(
-        {
-          error: 'Configuration error',
-          message: errorMessage,
-        },
-        { status: 500 }
-      );
-    }
 
     return NextResponse.json(
       {
@@ -73,8 +98,31 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const client = new YouSearchClient();
-    const results = await client.search(query);
+    // Extract options from body
+    const bodyParams = new URLSearchParams();
+    if (body.count) bodyParams.set('count', String(body.count));
+    if (body.freshness) bodyParams.set('freshness', body.freshness);
+    if (body.offset) bodyParams.set('offset', String(body.offset));
+    if (body.country) bodyParams.set('country', body.country);
+    if (body.language) bodyParams.set('language', body.language);
+    if (body.safesearch) bodyParams.set('safesearch', body.safesearch);
+    const options = extractOptions(bodyParams);
+
+    let client: YouSearchClient;
+    try {
+      client = new YouSearchClient();
+    } catch {
+      return NextResponse.json(
+        {
+          error: 'missing_api_key',
+          message:
+            'You.com API key is not configured. Add YOU_API_KEY to your .env.local file. Get a free key at https://you.com/platform',
+        },
+        { status: 503 }
+      );
+    }
+
+    const results = await client.search(query, options);
 
     if (format === 'text' || format === 'llm') {
       const formattedText = client.formatResultsForLLM(results);
@@ -88,7 +136,8 @@ export async function POST(request: NextRequest) {
 
     return NextResponse.json({
       query,
-      results,
+      results: results.results || {},
+      metadata: results.metadata,
     });
   } catch (error) {
     const errorMessage = error instanceof Error ? error.message : 'Unknown error';

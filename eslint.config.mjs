@@ -18,7 +18,7 @@ export default [
       'dist/**',
       'build/**',
       'coverage/**',
-      'legacy/**',
+
       '*.config.js',
     ],
   },

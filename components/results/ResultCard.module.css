@@ -124,6 +124,20 @@
   font-weight: 500;
 }
 
+.thumbnail {
+  margin-bottom: 0.75rem;
+  border-radius: 8px;
+  overflow: hidden;
+  max-height: 200px;
+}
+
+.thumbnail img {
+  width: 100%;
+  height: auto;
+  object-fit: cover;
+  display: block;
+}
+
 .description {
   color: var(--text-secondary);
   line-height: 1.6;
@@ -163,47 +177,6 @@
 .actionButton svg {
   flex-shrink: 0;
   stroke-width: 2;
-}
-
-.preview {
-  margin-top: 1rem;
-  padding: 1rem;
-  background: var(--bg-primary);
-  border-radius: 8px;
-  border: 1px solid var(--border);
-  animation: slideDown 0.3s ease;
-}
-
-.previewContent p {
-  color: var(--text-secondary);
-  line-height: 1.7;
-  margin-bottom: 0.75rem;
-}
-
-.previewSnippets {
-  margin-top: 1rem;
-  padding-top: 1rem;
-  border-top: 1px solid var(--border);
-}
-
-.previewSnippets p {
-  margin-bottom: 0.75rem;
-  padding-left: 1rem;
-  border-left: 2px solid var(--accent);
-}
-
-.readFullArticle {
-  display: inline-block;
-  margin-top: 0.75rem;
-  color: var(--accent);
-  text-decoration: none;
-  font-size: 0.9375rem;
-  font-weight: 500;
-  transition: opacity 0.2s ease;
-}
-
-.readFullArticle:hover {
-  opacity: 0.8;
 }
 
 .snippetsToggle {

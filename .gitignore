@@ -1,29 +1,3 @@
-# Python
-__pycache__/
-*.py[cod]
-*$py.class
-*.so
-.Python
-env/
-venv/
-ENV/
-develop-eggs/
-downloads/
-eggs/
-.eggs/
-lib64/
-parts/
-sdist/
-var/
-wheels/
-*.egg-info/
-.installed.cfg
-*.egg
-
-# Python build artifacts (but not our lib/ source directory)
-/build/
-/dist/
-
 # Environment variables
 .env
 .env*.local
@@ -48,7 +22,3 @@ node_modules/
 # OS
 .DS_Store
 Thumbs.db
-
-# Legacy code (archived for reference)
-legacy/
-ALIGNMENT.md

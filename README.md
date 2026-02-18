@@ -1,152 +1,143 @@
-# YouSearch
+# YouSearch — Build Your Own Search Engine
 
-**Open-source search engine for humans and AI** — Real-time web results through a clean interface and LLM-ready API.
+> Fork it. Add your API key. Deploy in 5 minutes.
+
+[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2Fyourusername%2Fyousearch&env=YOU_API_KEY&envDescription=You.com%20API%20key%20(free%20at%20you.com%2Fplatform)&project-name=yousearch)
 
 ![TypeScript](https://img.shields.io/badge/TypeScript-5.3-blue)
-![Next.js](https://img.shields.io/badge/Next.js-15.0-black)
+![Next.js](https://img.shields.io/badge/Next.js-15-black)
 ![License](https://img.shields.io/badge/license-MIT-blue.svg)
-
-## Why YouSearch?
-
-| For Humans                        | For AI/LLMs                          | For Developers                  |
-| --------------------------------- | ------------------------------------ | ------------------------------- |
-| Clean, distraction-free search UI | Structured results for RAG pipelines | Simple REST API, no SDK needed  |
-| Dark/light theme support          | LLM-optimized text format            | Self-hostable, full control     |
-| Search history navigation         | Source URLs for citations            | TypeScript + Next.js 15         |
-| Result previews and snippets      | Fresh, real-time data                | Production-ready out of the box |
 
 ## Quick Start
 
 ```bash
+# 1. Clone & install
 git clone https://github.com/yourusername/yousearch.git
-cd yousearch
-npm install
+cd yousearch && npm install
+
+# 2. Add your API key
 cp .env.example .env.local
-# Add your API key to .env.local
+# Edit .env.local and add your key
+
+# 3. Run
 npm run dev
 ```
 
-Visit [http://localhost:3000](http://localhost:3000)
+Open [http://localhost:3000](http://localhost:3000).
 
 ## Get Your API Key
 
-1. Go to [You.com Platform](https://you.com/platform)
-2. Sign up and generate an API key
-3. Add it to `.env.local`:
+1. Go to [you.com/platform](https://you.com/platform)
+2. Sign up and generate an API key — **$100 in free credits included**
+3. Add to `.env.local`:
 
 ```env
 YOU_API_KEY=your_api_key_here
 ```
 
+## What's Inside
+
+- **Web + news search** with freshness, country, and SafeSearch filters
+- **Dark/light theme** with system preference detection
+- **JSON + LLM-friendly text API** for AI integrations
+- **TypeScript, Next.js 15** — zero external UI dependencies
+
 ## API Usage
 
-### Search (JSON format)
+### JSON format
 
 ```bash
 curl "http://localhost:3000/api/search?q=latest+AI+news&format=json"
 ```
 
-### Search (LLM-friendly text)
+### LLM-friendly text
 
 ```bash
 curl "http://localhost:3000/api/search?q=latest+AI+news&format=text"
 ```
 
-### Response Structure
+### With filters
+
+```bash
+curl "http://localhost:3000/api/search?q=AI&freshness=week&country=US&safesearch=moderate"
+```
+
+### Response structure
 
 ```json
 {
   "query": "latest AI news",
   "results": {
-    "results": {
-      "web": [
-        {
-          "title": "Article Title",
-          "url": "https://example.com/article",
-          "description": "Article description...",
-          "snippets": ["Relevant text excerpts..."],
-          "favicon_url": "https://example.com/favicon.ico",
-          "age": "2 hours ago"
-        }
-      ],
-      "news": []
-    }
+    "web": [
+      {
+        "title": "Article Title",
+        "url": "https://example.com/article",
+        "description": "Article description...",
+        "snippets": ["Relevant text excerpts..."],
+        "favicon_url": "https://example.com/favicon.ico",
+        "age": "2 hours ago"
+      }
+    ],
+    "news": []
+  },
+  "metadata": {
+    "search_uuid": "...",
+    "query": "latest AI news",
+    "latency": 342
   }
 }
 ```
 
-### Health Check
+## You.com Search API Features Used
 
-```bash
-curl "http://localhost:3000/api/health"
-```
+| Parameter    | What it does                         | How the template uses it        |
+| ------------ | ------------------------------------ | ------------------------------- |
+| `query`      | Search query string                  | Main search input               |
+| `count`      | Number of results (1-100)            | Configurable via API            |
+| `freshness`  | Filter by time period                | Dropdown: day/week/month/year   |
+| `country`    | ISO 3166 country code                | Dropdown: US, UK, CA, DE, FR, JP|
+| `safesearch` | Content filtering level              | Dropdown: off/moderate/strict   |
+| `offset`     | Pagination offset (0-9)              | Configurable via API            |
 
-## Features
+## Customization
 
-### Search Interface
+### Theming
 
-- **Real-time results** — Live data from You.com's search index
-- **Rich result cards** — Favicons, reading time estimates, freshness badges
-- **Search history** — Navigate between previous searches in your session
-- **Result previews** — Expand results to see content snippets inline
-- **Follow-up questions** — Ask contextual follow-up queries
+Edit CSS variables in `app/globals.css` — colors, spacing, shadows, and typography tokens.
 
-### API Capabilities
+### Branding
 
-- **Multiple formats** — JSON for parsing, text for LLM prompts
-- **GET and POST** — Flexible request methods
-- **Query parameters** — Support for `q` or `query` params
-- **Error handling** — Clear error messages with appropriate status codes
+Update `components/layout/Header.tsx` to change the logo and navigation.
 
-### Developer Experience
+### Filters
 
-- **TypeScript strict mode** — Full type safety
-- **ESLint + Prettier** — Code quality enforced
-- **Husky pre-commit** — Automatic formatting on commit
-- **Modular architecture** — Clean component separation
+Add or modify filter options in `components/search/SearchFilters.tsx`.
 
 ## Project Structure
 
 ```
 yousearch/
 ├── app/
-│   ├── api/
-│   │   ├── search/route.ts    # Search endpoint
-│   │   └── health/route.ts    # Health check
+│   ├── api/search/route.ts    # Search API endpoint
 │   ├── page.tsx               # Main search page
-│   ├── layout.tsx             # Root layout
+│   ├── layout.tsx             # Root layout + metadata
 │   └── globals.css            # Design tokens
 ├── components/
-│   ├── search/                # Search UI components
-│   ├── results/               # Result display components
-│   ├── ui/                    # Shared UI components
-│   └── layout/                # Header, theme toggle
-├── lib/
-│   ├── you-search.ts          # API client
-│   ├── config.ts              # Environment config
-│   └── theme-provider.tsx     # Theme context
-└── docs/                      # Documentation
+│   ├── search/                # SearchInput, SearchResults, SearchFilters
+│   ├── results/               # ResultCard, ResultMeta
+│   ├── ui/                    # Loading, EmptyState, ErrorBanner
+│   └── layout/                # Header, ThemeToggle
+└── lib/
+    ├── you-search.ts          # You.com API client
+    ├── config.ts              # Environment config
+    └── theme-provider.tsx     # Theme context
 ```
 
-## Development
-
-```bash
-npm run dev          # Start development server
-npm run build        # Build for production
-npm run start        # Run production build
-npm run lint         # Check code with ESLint
-npm run format       # Format code with Prettier
-npm run type-check   # Run TypeScript type checking
-```
-
-## Deployment
+## Deploy
 
 ### Vercel (Recommended)
 
-1. Push to GitHub
-2. Import to [Vercel](https://vercel.com)
-3. Add `YOU_API_KEY` environment variable
-4. Deploy
+[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2Fyourusername%2Fyousearch&env=YOU_API_KEY&envDescription=You.com%20API%20key%20(free%20at%20you.com%2Fplatform)&project-name=yousearch)
 
 ### Docker
 
@@ -161,98 +152,16 @@ EXPOSE 3000
 CMD ["npm", "start"]
 ```
 
-### Other Platforms
+### Any Node.js 18+ host
 
-Any platform supporting Node.js 18+ works. Set `YOU_API_KEY` as environment variable.
+Set `YOU_API_KEY` as an environment variable. Run `npm run build && npm start`.
 
-## MCP Server (Claude Desktop)
+## Learn More
 
-YouSearch includes an MCP server for integration with Claude Desktop and other MCP-compliant hosts.
-
-### Quick Setup
-
-```bash
-cd mcp-server
-npm install
-npm run build
-```
-
-### Configure Claude Desktop
-
-Add to your Claude Desktop MCP configuration:
-
-```json
-{
-  "mcpServers": {
-    "yousearch": {
-      "command": "node",
-      "args": ["/path/to/yousearch/mcp-server/dist/main.js"],
-      "env": {
-        "YOU_API_KEY": "your-api-key-here"
-      }
-    }
-  }
-}
-```
-
-Then use the `you_search` tool in Claude Desktop to search the web with rich, interactive results.
-
-See [mcp-server/README.md](mcp-server/README.md) for full documentation.
-
-## Use Cases
-
-### RAG (Retrieval-Augmented Generation)
-
-Fetch real-time web results to ground LLM responses with current information.
-
-```python
-import requests
-
-def search_for_context(query):
-    response = requests.get(
-        "https://your-yousearch.com/api/search",
-        params={"q": query, "format": "text"}
-    )
-    return response.text
-
-context = search_for_context("latest developments in quantum computing")
-# Use context in your LLM prompt
-```
-
-### Research Agents
-
-Build autonomous agents that search the web for information.
-
-### Custom Search Interfaces
-
-Fork and customize the UI for your organization's needs.
-
-## Documentation
-
-- [Getting Started](docs/GETTING_STARTED.md) — Complete setup guide
-- [Architecture](docs/ARCHITECTURE.md) — System design
-- [API Reference](docs/API.md) — Endpoint documentation
-- [Contributing](docs/CONTRIBUTING.md) — How to contribute
-- [Alignment](ALIGNMENT.md) — Project goals and values
-
-## Contributing
-
-1. Fork the repository
-2. Create a feature branch: `git checkout -b feature/your-feature`
-3. Make changes following code style
-4. Run: `npm run format && npm run lint && npm run type-check`
-5. Commit and push
-6. Open a Pull Request
+- [You.com API Docs](https://docs.you.com) — Full API reference
+- [@youdotcom-oss/sdk](https://www.npmjs.com/package/@youdotcom-oss/sdk) — Official SDK
+- [You.com MCP Server](https://github.com/nichochar/you-mcp) — Official MCP server for Claude
 
 ## License
 
-MIT License — see [LICENSE](LICENSE) for details.
-
-## Acknowledgments
-
-- [You.com](https://you.com) for the Search API
-- Built with [Next.js](https://nextjs.org), [React](https://react.dev), and [TypeScript](https://typescriptlang.org)
-
----
-
-**Questions?** Open an [issue](https://github.com/yourusername/yousearch/issues) or check the [documentation](docs/).
+MIT — see [LICENSE](LICENSE) for details.

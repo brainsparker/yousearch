@@ -3,9 +3,10 @@ import styles from './ResultMeta.module.css';
 interface ResultMetaProps {
   resultCount: number;
   searchTime?: number;
+  apiLatency?: number;
 }
 
-export function ResultMeta({ resultCount, searchTime }: ResultMetaProps) {
+export function ResultMeta({ resultCount, searchTime, apiLatency }: ResultMetaProps) {
   return (
     <div className={styles.meta}>
       <div className={styles.count}>
@@ -31,7 +32,10 @@ export function ResultMeta({ resultCount, searchTime }: ResultMetaProps) {
               d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
             />
           </svg>
-          <span>{searchTime.toFixed(2)}s</span>
+          <span>
+            {searchTime.toFixed(2)}s
+            {apiLatency !== undefined && ` (API: ${apiLatency}ms)`}
+          </span>
         </div>
       )}
     </div>

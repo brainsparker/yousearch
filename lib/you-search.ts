@@ -1,16 +1,23 @@
 /**
  * You.com Search API Client
  *
- * Provides a simple interface to query the You.com Search API and format results
- * for different use cases including LLM consumption.
+ * This template uses fetch directly so you can see exactly how the API works.
+ * For production apps, you can also use the official SDK: @youdotcom-oss/sdk
  *
- * @example
- * ```typescript
- * const client = new YouSearchClient();
- * const results = await client.search('Next.js tutorials', 10);
- * const formatted = client.formatResultsForLLM(results);
- * ```
+ * @see https://docs.you.com
  */
+
+/**
+ * Search options for filtering and pagination
+ */
+export interface SearchOptions {
+  count?: number; // 1-100, default 10
+  freshness?: 'day' | 'week' | 'month' | 'year' | string;
+  offset?: number; // 0-9, for pagination
+  country?: string; // ISO 3166 code (US, GB, DE, etc.)
+  language?: string; // BCP 47 code (EN, ES, FR, etc.)
+  safesearch?: 'off' | 'moderate' | 'strict';
+}
 
 /**
  * Individual search result item
@@ -24,6 +31,8 @@ export interface SearchResult {
   age?: string; // Relative time like "2 hours ago", "1 day ago"
   page_age?: string; // ISO 8601 date from API
   thumbnail_url?: string; // For preview images
+  contents?: { html?: string; markdown?: string };
+  authors?: string[];
 }
 
 /**
@@ -34,6 +43,11 @@ export interface SearchResponse {
     web?: SearchResult[];
     news?: SearchResult[];
   };
+  metadata?: {
+    search_uuid: string;
+    query: string;
+    latency: number;
+  };
 }
 
 /**
@@ -41,7 +55,15 @@ export interface SearchResponse {
  */
 export interface SearchAPIResponse {
   query: string;
-  results: SearchResponse;
+  results: {
+    web?: SearchResult[];
+    news?: SearchResult[];
+  };
+  metadata?: {
+    search_uuid: string;
+    query: string;
+    latency: number;
+  };
 }
 
 /**
@@ -51,57 +73,55 @@ export class YouSearchClient {
   private static readonly BASE_URL = 'https://ydc-index.io/v1/search';
   private apiKey: string;
 
-  /**
-   * Creates a new You.com Search API client
-   *
-   * @param apiKey - Optional API key. If not provided, uses YOU_API_KEY environment variable
-   * @throws Error if no API key is provided or found in environment
-   */
   constructor(apiKey?: string) {
     this.apiKey = apiKey || process.env.YOU_API_KEY || '';
     if (!this.apiKey) {
-      throw new Error(
-        'API key is required. Set YOU_API_KEY environment variable or pass api_key parameter'
-      );
+      throw new Error('missing_api_key');
     }
   }
 
   /**
    * Searches the You.com API for the given query
-   *
-   * @param query - The search query string
-   * @param numResults - Maximum number of results to return (default: 10)
-   * @returns Promise resolving to search results with web and news data
-   * @throws Error if API key is invalid or request fails
-   *
-   * @example
-   * ```typescript
-   * const client = new YouSearchClient();
-   * const results = await client.search('TypeScript tutorials');
-   * console.log(results.results.web);
-   * ```
    */
-  async search(query: string, numResults: number = 10): Promise<SearchResponse> {
+  async search(query: string, options?: SearchOptions): Promise<SearchResponse> {
     const headers = {
       'X-API-Key': this.apiKey,
     };
 
-    const params = new URLSearchParams({
-      query,
-    });
+    const params = new URLSearchParams({ query });
+
+    if (options) {
+      if (options.count !== undefined) params.set('count', String(options.count));
+      if (options.freshness) params.set('freshness', options.freshness);
+      if (options.offset !== undefined) params.set('offset', String(options.offset));
+      if (options.country) params.set('country', options.country);
+      if (options.language) params.set('language', options.language);
+      if (options.safesearch) params.set('safesearch', options.safesearch);
+    }
 
     try {
       const response = await fetch(`${YouSearchClient.BASE_URL}?${params.toString()}`, {
         headers,
-        next: { revalidate: 0 }, // Disable caching for real-time results
+        next: { revalidate: 0 },
       });
 
+      if (response.status === 401 || response.status === 403) {
+        throw new Error(`Invalid API key (${response.status})`);
+      }
+
+      if (response.status === 429) {
+        throw new Error(`Rate limit exceeded (${response.status})`);
+      }
+
       if (!response.ok) {
-        throw new Error(`API request failed: ${response.statusText}`);
+        throw new Error(`API request failed: ${response.status} ${response.statusText}`);
       }
 
       return await response.json();
     } catch (error) {
+      if (error instanceof Error && error.message.match(/^\w/)) {
+        throw error;
+      }
       throw new Error(
         `Error querying You.com API: ${error instanceof Error ? error.message : 'Unknown error'}`
       );
@@ -110,31 +130,10 @@ export class YouSearchClient {
 
   /**
    * Formats search results into LLM-friendly text format
-   *
-   * Converts search results into a structured text format optimized for
-   * consumption by Large Language Models, including titles, URLs,
-   * descriptions, and snippets.
-   *
-   * @param results - Search results to format
-   * @returns Formatted text string with clear sections and structure
-   *
-   * @example
-   * ```typescript
-   * const results = await client.search('React hooks');
-   * const formatted = client.formatResultsForLLM(results);
-   * console.log(formatted);
-   * // Output:
-   * // === WEB SEARCH RESULTS ===
-   * //
-   * // 1. React Hooks Documentation
-   * //    URL: https://react.dev/hooks
-   * //    Description: ...
-   * ```
    */
   formatResultsForLLM(results: SearchResponse): string {
     const formatted: string[] = [];
 
-    // Add web results
     if (results.results?.web) {
       const webResults = results.results.web;
       formatted.push('=== WEB SEARCH RESULTS ===\n');
@@ -160,7 +159,6 @@ export class YouSearchClient {
       });
     }
 
-    // Add news results if available
     if (results.results?.news && results.results.news.length > 0) {
       const newsResults = results.results.news;
       formatted.push('\n=== NEWS RESULTS ===\n');

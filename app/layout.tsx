@@ -7,9 +7,18 @@ import { Header } from '@/components/layout/Header';
 const inter = Inter({ subsets: ['latin'] });
 
 export const metadata: Metadata = {
-  title: 'YouSearch - Real-time search for humans and AI',
-  description:
-    'Open-source search engine with a clean interface for humans and LLM-ready API for AI. Fresh web results, no tracking.',
+  title: 'YouSearch — Open Source Search Engine Template',
+  description: 'Build your own search engine with You.com API. Fork, add your key, deploy.',
+  openGraph: {
+    title: 'YouSearch — Open Source Search Engine Template',
+    description: 'Build your own search engine with You.com API. Fork, add your key, deploy.',
+    type: 'website',
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'YouSearch — Open Source Search Engine Template',
+    description: 'Build your own search engine with You.com API. Fork, add your key, deploy.',
+  },
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
