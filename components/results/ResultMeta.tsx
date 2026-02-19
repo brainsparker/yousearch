@@ -1,12 +1,29 @@
+'use client';
+
+import { useState } from 'react';
+import type { SearchResult } from '@/lib/you-search';
+import { formatResultsAsMarkdown } from '@/lib/format-results-markdown';
 import styles from './ResultMeta.module.css';
 
 interface ResultMetaProps {
   resultCount: number;
   searchTime?: number;
   apiLatency?: number;
+  results?: SearchResult[];
+  newsResults?: SearchResult[];
 }
 
-export function ResultMeta({ resultCount, searchTime, apiLatency }: ResultMetaProps) {
+export function ResultMeta({ resultCount, searchTime, apiLatency, results, newsResults }: ResultMetaProps) {
+  const [copied, setCopied] = useState(false);
+
+  const handleCopy = async () => {
+    if (!results) return;
+    const md = formatResultsAsMarkdown(results, newsResults);
+    await navigator.clipboard.writeText(md);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2000);
+  };
+
   return (
     <div className={styles.meta}>
       <div className={styles.count}>
@@ -36,6 +53,11 @@ export function ResultMeta({ resultCount, searchTime, apiLatency }: ResultMetaPr
             {searchTime.toFixed(2)}s{apiLatency !== undefined && ` (API: ${apiLatency}ms)`}
           </span>
         </div>
+      )}
+      {results && results.length > 0 && (
+        <button className={styles.copyButton} onClick={handleCopy}>
+          {copied ? '> Copied!' : '> Copy as md'}
+        </button>
       )}
     </div>
   );

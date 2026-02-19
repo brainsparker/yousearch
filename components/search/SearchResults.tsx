@@ -8,6 +8,7 @@ interface SearchResultsProps {
   newsResults?: SearchResult[];
   searchTime?: number;
   apiLatency?: number;
+  activeIndex?: number;
 }
 
 export function SearchResults({
@@ -15,6 +16,7 @@ export function SearchResults({
   newsResults,
   searchTime,
   apiLatency,
+  activeIndex = -1,
 }: SearchResultsProps) {
   if (results.length === 0 && (!newsResults || newsResults.length === 0)) {
     return null;
@@ -22,12 +24,22 @@ export function SearchResults({
 
   return (
     <div className={styles.container}>
-      <ResultMeta resultCount={results.length} searchTime={searchTime} apiLatency={apiLatency} />
+      <ResultMeta
+        resultCount={results.length}
+        searchTime={searchTime}
+        apiLatency={apiLatency}
+        results={results}
+        newsResults={newsResults}
+      />
 
       <div className={styles.results}>
         {results.map((result, index) => (
           <div key={result.url}>
-            <ResultDocument result={result} index={index} />
+            <ResultDocument
+              result={result}
+              index={index}
+              isActive={index === activeIndex}
+            />
             {index < results.length - 1 && <hr className={styles.divider} />}
           </div>
         ))}
@@ -39,7 +51,11 @@ export function SearchResults({
           <div className={styles.results}>
             {newsResults.map((result, index) => (
               <div key={result.url}>
-                <ResultDocument result={result} index={index} />
+                <ResultDocument
+                  result={result}
+                  index={index}
+                  isActive={results.length + index === activeIndex}
+                />
                 {index < newsResults.length - 1 && <hr className={styles.divider} />}
               </div>
             ))}

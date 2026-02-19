@@ -1,0 +1,11 @@
+.indicators {
+  display: flex;
+  gap: 0.5rem;
+  padding: 0.25rem 0;
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+}
+
+.bang {
+  color: var(--accent);
+}

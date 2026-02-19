@@ -1,0 +1,60 @@
+.viewer {
+  margin-top: 1.5rem;
+  font-family: var(--font-mono);
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 0.5rem 0;
+  font-size: 0.8125rem;
+}
+
+.title {
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+.statusOk {
+  color: #22c55e;
+}
+
+.statusErr {
+  color: #ef4444;
+}
+
+.timing {
+  color: var(--text-tertiary);
+  font-size: 0.75rem;
+}
+
+.copy {
+  margin-left: auto;
+  background: none;
+  border: none;
+  color: var(--text-tertiary);
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  cursor: pointer;
+  padding: 0;
+}
+
+.copy:hover {
+  color: var(--accent);
+}
+
+.body {
+  background: var(--bg-secondary);
+  border: 1px solid var(--border);
+  padding: 1rem;
+  overflow-x: auto;
+  overflow-y: auto;
+  max-height: 500px;
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  line-height: 1.7;
+  color: var(--text-secondary);
+  white-space: pre-wrap;
+  word-break: break-word;
+}

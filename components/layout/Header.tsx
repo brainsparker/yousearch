@@ -13,6 +13,9 @@ export function Header() {
         </Link>
 
         <nav className={styles.nav}>
+          <Link href="/playground" className={styles.navLink}>
+            Playground
+          </Link>
           <a
             href="/api/search?q=hello&format=json"
             target="_blank"

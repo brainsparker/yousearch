@@ -1,0 +1,46 @@
+.dropdown {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  z-index: 50;
+  background: var(--bg-secondary);
+  border: 1px solid var(--border);
+  border-top: none;
+  font-family: var(--font-mono);
+  font-size: 0.8125rem;
+}
+
+.item {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  width: 100%;
+  padding: 0.375rem 0.75rem;
+  background: none;
+  border: none;
+  color: var(--text-secondary);
+  font-family: var(--font-mono);
+  font-size: 0.8125rem;
+  cursor: pointer;
+  text-align: left;
+}
+
+.item:hover {
+  background: var(--bg-primary);
+  color: var(--text-primary);
+}
+
+.name {
+  color: var(--accent);
+}
+
+.args {
+  color: var(--text-tertiary);
+}
+
+.desc {
+  margin-left: auto;
+  color: var(--text-tertiary);
+  font-size: 0.75rem;
+}

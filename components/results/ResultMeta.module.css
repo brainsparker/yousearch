@@ -20,3 +20,18 @@
 .time svg {
   display: none;
 }
+
+.copyButton {
+  margin-left: auto;
+  background: none;
+  border: none;
+  color: var(--text-tertiary);
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  cursor: pointer;
+  padding: 0;
+}
+
+.copyButton:hover {
+  color: var(--accent);
+}

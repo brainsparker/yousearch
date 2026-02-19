@@ -102,6 +102,62 @@
   color: var(--accent);
 }
 
+.helpOverlay {
+  padding: 1rem 0;
+  font-family: var(--font-mono);
+  font-size: 0.8125rem;
+  line-height: 1.7;
+  color: var(--text-secondary);
+}
+
+.helpOverlay h3 {
+  font-size: 0.8125rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin-top: 1rem;
+  margin-bottom: 0.25rem;
+  font-family: var(--font-mono);
+}
+
+.helpOverlay h3::before {
+  content: '## ';
+  color: var(--text-tertiary);
+  font-weight: 400;
+}
+
+.helpOverlay p {
+  margin: 0;
+  font-size: 0.8125rem;
+}
+
+.helpOverlay kbd {
+  display: inline-block;
+  padding: 0.0625rem 0.3125rem;
+  border: 1px solid var(--border);
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  color: var(--text-secondary);
+}
+
+.helpOverlay code {
+  color: var(--accent);
+}
+
+.helpClose {
+  background: none;
+  border: none;
+  color: var(--text-tertiary);
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  cursor: pointer;
+  padding: 0;
+  margin-top: 1rem;
+}
+
+.helpClose:hover {
+  color: var(--accent);
+}
+
 @media (max-width: 768px) {
   .hero {
     padding: 2rem 0 1rem;
