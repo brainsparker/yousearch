@@ -2,7 +2,7 @@
 
 > Fork it. Add your API key. Deploy in 5 minutes.
 
-[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2Fyourusername%2Fyousearch&env=YOU_API_KEY&envDescription=You.com%20API%20key%20(free%20at%20you.com%2Fplatform)&project-name=yousearch)
+[![Deploy with Vercel](https://vercel.com/button)](<https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2Fyourusername%2Fyousearch&env=YOU_API_KEY&envDescription=You.com%20API%20key%20(free%20at%20you.com%2Fplatform)&project-name=yousearch>)
 
 ![TypeScript](https://img.shields.io/badge/TypeScript-5.3-blue)
 ![Next.js](https://img.shields.io/badge/Next.js-15-black)
@@ -90,14 +90,14 @@ curl "http://localhost:3000/api/search?q=AI&freshness=week&country=US&safesearch
 
 ## You.com Search API Features Used
 
-| Parameter    | What it does                         | How the template uses it        |
-| ------------ | ------------------------------------ | ------------------------------- |
-| `query`      | Search query string                  | Main search input               |
-| `count`      | Number of results (1-100)            | Configurable via API            |
-| `freshness`  | Filter by time period                | Dropdown: day/week/month/year   |
-| `country`    | ISO 3166 country code                | Dropdown: US, UK, CA, DE, FR, JP|
-| `safesearch` | Content filtering level              | Dropdown: off/moderate/strict   |
-| `offset`     | Pagination offset (0-9)              | Configurable via API            |
+| Parameter    | What it does              | How the template uses it         |
+| ------------ | ------------------------- | -------------------------------- |
+| `query`      | Search query string       | Main search input                |
+| `count`      | Number of results (1-100) | Configurable via API             |
+| `freshness`  | Filter by time period     | Dropdown: day/week/month/year    |
+| `country`    | ISO 3166 country code     | Dropdown: US, UK, CA, DE, FR, JP |
+| `safesearch` | Content filtering level   | Dropdown: off/moderate/strict    |
+| `offset`     | Pagination offset (0-9)   | Configurable via API             |
 
 ## Customization
 
@@ -137,7 +137,7 @@ yousearch/
 
 ### Vercel (Recommended)
 
-[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2Fyourusername%2Fyousearch&env=YOU_API_KEY&envDescription=You.com%20API%20key%20(free%20at%20you.com%2Fplatform)&project-name=yousearch)
+[![Deploy with Vercel](https://vercel.com/button)](<https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2Fyourusername%2Fyousearch&env=YOU_API_KEY&envDescription=You.com%20API%20key%20(free%20at%20you.com%2Fplatform)&project-name=yousearch>)
 
 ### Docker
 

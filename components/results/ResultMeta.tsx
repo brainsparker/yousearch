@@ -33,8 +33,7 @@ export function ResultMeta({ resultCount, searchTime, apiLatency }: ResultMetaPr
             />
           </svg>
           <span>
-            {searchTime.toFixed(2)}s
-            {apiLatency !== undefined && ` (API: ${apiLatency}ms)`}
+            {searchTime.toFixed(2)}s{apiLatency !== undefined && ` (API: ${apiLatency}ms)`}
           </span>
         </div>
       )}

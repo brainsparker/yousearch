@@ -1,0 +1,109 @@
+.searchArea {
+  display: flex;
+  flex-direction: column;
+}
+
+.hero {
+  display: flex;
+  flex-direction: column;
+  padding: 3rem 0 1.5rem;
+  width: 100%;
+}
+
+.heroContent {
+  margin-bottom: 1.5rem;
+}
+
+.heroContent p:last-child,
+.heroContent .mdx-p:last-child {
+  margin-bottom: 0;
+}
+
+.compactHero {
+  padding: 1.25rem 0 0.75rem;
+  width: 100%;
+}
+
+.searchContainer {
+  margin-bottom: 1rem;
+  width: 100%;
+}
+
+.suggestions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0;
+  flex-direction: column;
+}
+
+.suggestionPill {
+  background: none;
+  border: none;
+  padding: 0.125rem 0;
+  font-size: 0.8125rem;
+  font-family: var(--font-mono);
+  color: var(--text-tertiary);
+  cursor: pointer;
+  text-align: left;
+  transition: color 0.15s ease;
+}
+
+.suggestionPill::before {
+  content: '> ';
+  color: var(--text-tertiary);
+}
+
+.suggestionPill:hover {
+  color: var(--accent);
+}
+
+.content {
+  width: 100%;
+}
+
+.onboarding {
+  margin: 1.5rem 0;
+  padding: 0;
+  text-align: left;
+  font-family: var(--font-mono);
+}
+
+.onboarding h2 {
+  font-size: 0.875rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin-bottom: 0.75rem;
+  font-family: var(--font-mono);
+}
+
+.onboarding p {
+  color: var(--text-secondary);
+  line-height: 1.7;
+  margin-bottom: 0.75rem;
+  font-size: 0.875rem;
+  font-family: var(--font-mono);
+}
+
+.onboarding a {
+  color: var(--accent);
+  text-decoration: none;
+}
+
+.onboarding a:hover {
+  text-decoration: underline;
+}
+
+.onboardingHint {
+  font-size: 0.8125rem;
+  color: var(--text-tertiary);
+}
+
+.onboardingHint code {
+  color: var(--accent);
+}
+
+@media (max-width: 768px) {
+  .hero {
+    padding: 2rem 0 1rem;
+  }
+}
