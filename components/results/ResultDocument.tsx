@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useCallback } from 'react';
 import type { SearchResult } from '@/lib/you-search';
 import styles from './ResultDocument.module.css';
 
@@ -8,7 +8,15 @@ interface ResultDocumentProps {
   result: SearchResult;
   index: number;
   isActive?: boolean;
+  /** Changes each time the reader should be toggled from the keyboard */
+  readSignal?: number;
 }
+
+type ReaderState =
+  | { status: 'idle' }
+  | { status: 'loading' }
+  | { status: 'ready'; markdown: string }
+  | { status: 'error'; message: string };
 
 function getRelativeTime(isoDate?: string): string | undefined {
   if (!isoDate) return undefined;
@@ -46,12 +54,22 @@ function getRelativeTime(isoDate?: string): string | undefined {
   }
 }
 
-export function ResultDocument({ result, index, isActive = false }: ResultDocumentProps) {
+export function ResultDocument({
+  result,
+  index,
+  isActive = false,
+  readSignal = 0,
+}: ResultDocumentProps) {
   const [showSnippets, setShowSnippets] = useState(false);
   const [showContent, setShowContent] = useState(false);
+  // Page content is fetched on demand, unless the search response already carried it
+  const [reader, setReader] = useState<ReaderState>(
+    result.contents?.markdown
+      ? { status: 'ready', markdown: result.contents.markdown }
+      : { status: 'idle' }
+  );
   const ref = useRef<HTMLElement>(null);
   const hasSnippets = result.snippets && result.snippets.length > 0;
-  const hasMarkdown = !!result.contents?.markdown;
   const displayAge = result.age || getRelativeTime(result.page_age);
   const hostname = new URL(result.url).hostname;
 
@@ -60,6 +78,44 @@ export function ResultDocument({ result, index, isActive = false }: ResultDocume
       ref.current.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
     }
   }, [isActive]);
+
+  const loadPage = useCallback(async () => {
+    setReader({ status: 'loading' });
+    try {
+      const response = await fetch(`/api/extract?url=${encodeURIComponent(result.url)}`);
+      const data = await response.json();
+      if (!response.ok) {
+        throw new Error(data.message || 'Could not read this page');
+      }
+      setReader({ status: 'ready', markdown: data.markdown });
+    } catch (err) {
+      setReader({
+        status: 'error',
+        message: err instanceof Error ? err.message : 'Could not read this page',
+      });
+    }
+  }, [result.url]);
+
+  const toggleReader = useCallback(() => {
+    if (showContent) {
+      setShowContent(false);
+      return;
+    }
+    setShowContent(true);
+    if (reader.status === 'idle' || reader.status === 'error') {
+      loadPage();
+    }
+  }, [showContent, reader.status, loadPage]);
+
+  // Keyboard: the parent bumps readSignal when `r` is pressed on this result
+  const lastReadSignal = useRef(readSignal);
+  useEffect(() => {
+    // 0 means "not this result", so only a new non-zero value is a request
+    if (readSignal !== 0 && readSignal !== lastReadSignal.current) {
+      lastReadSignal.current = readSignal;
+      toggleReader();
+    }
+  }, [readSignal, toggleReader]);
 
   return (
     <section ref={ref} className={`${styles.document}${isActive ? ` ${styles.active}` : ''}`}>
@@ -95,14 +151,9 @@ export function ResultDocument({ result, index, isActive = false }: ResultDocume
             {showSnippets ? 'Hide' : 'Show'} snippets
           </button>
         )}
-        {hasMarkdown && (
-          <button
-            onClick={() => setShowContent(!showContent)}
-            className={styles.snippetToggle}
-          >
-            {showContent ? 'Hide page' : 'Read page'}
-          </button>
-        )}
+        <button onClick={toggleReader} className={styles.snippetToggle} aria-expanded={showContent}>
+          {showContent ? 'Hide page' : 'Read page'}
+        </button>
       </div>
 
       {showSnippets &&
@@ -112,11 +163,34 @@ export function ResultDocument({ result, index, isActive = false }: ResultDocume
           </blockquote>
         ))}
 
-      {showContent && result.contents?.markdown && (
+      {showContent && reader.status === 'loading' && (
+        <div className={styles.contentReader} role="status">
+          <div className={styles.contentDelimiter}>--- reading page ... ---</div>
+        </div>
+      )}
+
+      {showContent && reader.status === 'error' && (
+        <div className={styles.contentReader} role="alert">
+          <div className={styles.contentError}>{reader.message}</div>
+          <button onClick={loadPage} className={styles.snippetToggle}>
+            Try again
+          </button>
+        </div>
+      )}
+
+      {showContent && reader.status === 'ready' && (
         <div className={styles.contentReader}>
           <div className={styles.contentDelimiter}>--- page content ---</div>
-          <pre className={styles.contentBody}>{result.contents.markdown}</pre>
-          <div className={styles.contentDelimiter}>--- end ---</div>
+          <pre className={styles.contentBody}>{reader.markdown}</pre>
+          <div className={styles.contentActions}>
+            <span className={styles.contentDelimiter}>--- end ---</span>
+            <button
+              onClick={() => navigator.clipboard.writeText(reader.markdown)}
+              className={styles.snippetToggle}
+            >
+              Copy markdown
+            </button>
+          </div>
         </div>
       )}
     </section>

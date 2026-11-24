@@ -3,6 +3,7 @@ import { useState, useEffect, useCallback } from 'react';
 interface UseKeyboardNavOptions {
   resultCount: number;
   onOpen: (index: number) => void;
+  onRead?: (index: number) => void;
   onFocusSearch: () => void;
   enabled: boolean;
 }
@@ -10,6 +11,7 @@ interface UseKeyboardNavOptions {
 export function useKeyboardNav({
   resultCount,
   onOpen,
+  onRead,
   onFocusSearch,
   enabled,
 }: UseKeyboardNavOptions) {
@@ -61,12 +63,15 @@ export function useKeyboardNav({
       } else if (e.key === 'Enter' && activeIndex >= 0) {
         e.preventDefault();
         onOpen(activeIndex);
+      } else if (e.key === 'r' && activeIndex >= 0 && onRead && !e.metaKey && !e.ctrlKey) {
+        e.preventDefault();
+        onRead(activeIndex);
       } else if (e.key === '/') {
         e.preventDefault();
         onFocusSearch();
       }
     },
-    [enabled, resultCount, activeIndex, onOpen, onFocusSearch, setActiveIndex]
+    [enabled, resultCount, activeIndex, onOpen, onRead, onFocusSearch, setActiveIndex]
   );
 
   useEffect(() => {

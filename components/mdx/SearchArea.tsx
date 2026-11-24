@@ -31,6 +31,7 @@ export function SearchArea({ children }: SearchAreaProps) {
   const [currentQuery, setCurrentQuery] = useState('');
   const [activeBangs, setActiveBangs] = useState<string[]>([]);
   const [showHelp, setShowHelp] = useState(false);
+  const [readRequest, setReadRequest] = useState({ index: -1, nonce: 0 });
   const [filters, setFilters] = useState<FilterValues>({
     freshness: '',
     country: '',
@@ -51,6 +52,7 @@ export function SearchArea({ children }: SearchAreaProps) {
       const result = allResults[index];
       if (result) window.open(result.url, '_blank');
     },
+    onRead: (index) => setReadRequest((prev) => ({ index, nonce: prev.nonce + 1 })),
     onFocusSearch: () => inputRef.current?.focus(),
     enabled: hasSearched && !loading,
   });
@@ -103,12 +105,7 @@ export function SearchArea({ children }: SearchAreaProps) {
 
         if (!response.ok) {
           const errorData = await response.json();
-          if (errorData.error === 'missing_api_key') {
-            setError('missing_api_key');
-          } else {
-            throw new Error(errorData.message || 'Search failed');
-          }
-          return;
+          throw new Error(errorData.message || 'Search failed');
         }
 
         const data: SearchAPIResponse = await response.json();
@@ -256,24 +253,7 @@ export function SearchArea({ children }: SearchAreaProps) {
       )}
 
       <div className={styles.content}>
-        {error === 'missing_api_key' && (
-          <div className={styles.onboarding}>
-            <h2>Welcome to YouSearch!</h2>
-            <p>
-              Add your You.com API key to get started. Get one free at{' '}
-              <a href="https://you.com/platform" target="_blank" rel="noopener noreferrer">
-                you.com/platform
-              </a>{' '}
-              — includes $100 in credits.
-            </p>
-            <p className={styles.onboardingHint}>
-              Add <code>YOU_API_KEY=your_key</code> to <code>.env.local</code> and restart the dev
-              server.
-            </p>
-          </div>
-        )}
-
-        {error && error !== 'missing_api_key' && <ErrorBanner message={error} />}
+        {error && <ErrorBanner message={error} />}
 
         {loading && <Loading />}
 
@@ -282,6 +262,7 @@ export function SearchArea({ children }: SearchAreaProps) {
             <h3>Keyboard shortcuts</h3>
             <p><kbd>j</kbd>/<kbd>k</kbd> — navigate results</p>
             <p><kbd>Enter</kbd> — open selected result</p>
+            <p><kbd>r</kbd> - read selected result as markdown</p>
             <p><kbd>/</kbd> — focus search input</p>
             <p><kbd>Esc</kbd> — clear selection / blur input</p>
             <h3>Bang commands</h3>
@@ -307,7 +288,19 @@ export function SearchArea({ children }: SearchAreaProps) {
             searchTime={searchTime}
             apiLatency={results.metadata?.latency}
             activeIndex={activeIndex}
+            readRequest={readRequest}
           />
+        )}
+
+        {!loading && !error && results?.mode === 'keyless' && (
+          <p className={styles.keylessNote}>
+            Running on the You.com keyless free tier, which is rate limited. Add{' '}
+            <code>YOU_API_KEY</code> for higher limits. Free key at{' '}
+            <a href="https://you.com/platform" target="_blank" rel="noopener noreferrer">
+              you.com/platform
+            </a>
+            .
+          </p>
         )}
 
         {!loading && !error && hasSearched && !showHelp && (

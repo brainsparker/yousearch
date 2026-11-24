@@ -2,10 +2,36 @@
  * You.com Search API Client
  *
  * This template uses fetch directly so you can see exactly how the API works.
- * For production apps, you can also use the official SDK: @youdotcom-oss/sdk
  *
- * @see https://docs.you.com
+ * Two modes, picked by whether an API key is present:
+ * - keyed: YOU_API_KEY is set. Calls the Web Search API with your key.
+ * - keyless: no key. Calls You.com's keyless free tier, which is rate limited
+ *   per IP. Good for trying the template, not for production traffic.
+ *
+ * @see https://you.com/docs
  */
+
+/**
+ * Which You.com access path a client is using
+ */
+export type YouMode = 'keyed' | 'keyless';
+
+/**
+ * Error from a You.com API call, carrying the HTTP status to pass on to callers
+ */
+export class YouApiError extends Error {
+  readonly status: number;
+
+  constructor(message: string, status: number) {
+    super(message);
+    this.name = 'YouApiError';
+    this.status = status;
+  }
+}
+
+/** Shown whenever the keyless free tier runs out */
+export const KEYLESS_LIMIT_HINT =
+  'Keyless free-tier limit reached. Add YOU_API_KEY for higher limits (free key at https://you.com/platform).';
 
 /**
  * Search options for filtering and pagination
@@ -55,6 +81,7 @@ export interface SearchResponse {
  */
 export interface SearchAPIResponse {
   query: string;
+  mode?: YouMode;
   results: {
     web?: SearchResult[];
     news?: SearchResult[];
@@ -70,23 +97,25 @@ export interface SearchAPIResponse {
  * Client for interacting with the You.com Search API
  */
 export class YouSearchClient {
-  private static readonly BASE_URL = 'https://ydc-index.io/v1/search';
+  private static readonly KEYED_URL = 'https://ydc-index.io/v1/search';
+  private static readonly KEYLESS_URL = 'https://api.you.com/v1/agents/search';
   private apiKey: string;
 
+  /** 'keyed' when an API key is available, otherwise 'keyless' */
+  readonly mode: YouMode;
+
   constructor(apiKey?: string) {
-    this.apiKey = apiKey || process.env.YOU_API_KEY || '';
-    if (!this.apiKey) {
-      throw new Error('missing_api_key');
-    }
+    this.apiKey = (apiKey ?? process.env.YOU_API_KEY ?? '').trim();
+    this.mode = this.apiKey ? 'keyed' : 'keyless';
   }
 
   /**
    * Searches the You.com API for the given query
    */
   async search(query: string, options?: SearchOptions): Promise<SearchResponse> {
-    const headers = {
-      'X-API-Key': this.apiKey,
-    };
+    const keyed = this.mode === 'keyed';
+    const baseUrl = keyed ? YouSearchClient.KEYED_URL : YouSearchClient.KEYLESS_URL;
+    const headers: Record<string, string> = keyed ? { 'X-API-Key': this.apiKey } : {};
 
     const params = new URLSearchParams({ query });
 
@@ -99,33 +128,43 @@ export class YouSearchClient {
       if (options.safesearch) params.set('safesearch', options.safesearch);
     }
 
+    let response: Response;
     try {
-      const response = await fetch(`${YouSearchClient.BASE_URL}?${params.toString()}`, {
+      response = await fetch(`${baseUrl}?${params.toString()}`, {
         headers,
-        next: { revalidate: 0 },
+        cache: 'no-store',
       });
-
-      if (response.status === 401 || response.status === 403) {
-        throw new Error(`Invalid API key (${response.status})`);
-      }
-
-      if (response.status === 429) {
-        throw new Error(`Rate limit exceeded (${response.status})`);
-      }
-
-      if (!response.ok) {
-        throw new Error(`API request failed: ${response.status} ${response.statusText}`);
-      }
-
-      return await response.json();
     } catch (error) {
-      if (error instanceof Error && error.message.match(/^\w/)) {
-        throw error;
-      }
-      throw new Error(
-        `Error querying You.com API: ${error instanceof Error ? error.message : 'Unknown error'}`
+      throw new YouApiError(
+        `Error querying You.com API: ${error instanceof Error ? error.message : 'Unknown error'}`,
+        502
       );
     }
+
+    if (response.status === 429) {
+      throw new YouApiError(
+        keyed ? `Rate limit exceeded (${response.status})` : KEYLESS_LIMIT_HINT,
+        429
+      );
+    }
+
+    if (response.status === 401 || response.status === 403) {
+      throw new YouApiError(
+        keyed
+          ? `Invalid API key (${response.status})`
+          : `Keyless search was refused (${response.status}). Add YOU_API_KEY to use the keyed API.`,
+        502
+      );
+    }
+
+    if (!response.ok) {
+      throw new YouApiError(
+        `API request failed: ${response.status} ${response.statusText}`.trim(),
+        502
+      );
+    }
+
+    return await response.json();
   }
 
   /**
