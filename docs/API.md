@@ -1,6 +1,15 @@
 # API Reference
 
-YouSearch provides a simple REST API for web search. All endpoints return JSON unless otherwise specified.
+YouSearch provides a simple REST API for web search and page reading. All endpoints return JSON unless otherwise specified.
+
+## Modes
+
+The API works with or without a You.com API key:
+
+- **keyless**: `YOU_API_KEY` is not set. Requests go to You.com's keyless free tier, which is rate limited.
+- **keyed**: `YOU_API_KEY` is set. Requests go to the keyed You.com APIs with your account's limits.
+
+Search and extract responses carry the active mode in the `X-YouSearch-Mode` header, and `GET /api/health` reports it too. When the keyless limit runs out, endpoints answer `429` with a message that points to the fix.
 
 ## Base URL
 
@@ -111,6 +120,78 @@ curl -X POST "http://localhost:3000/api/search" \
 
 ---
 
+### Extract
+
+Read one webpage or PDF as Markdown. Backed by the [You.com Extract API](https://you.com/docs/guides/extract).
+
+#### GET /api/extract
+
+**Query Parameters**
+
+| Parameter | Type   | Required | Description                                                    |
+| --------- | ------ | -------- | -------------------------------------------------------------- |
+| `url`     | string | Yes      | Public `http` or `https` URL of the page or PDF                |
+| `format`  | string | No       | `json` (default), or `markdown` (aliases: `md`, `text`, `llm`) |
+
+**Example Request**
+
+```bash
+curl "http://localhost:3000/api/extract?url=https://example.com"
+```
+
+**Example Response (JSON)**
+
+```json
+{
+  "url": "https://example.com",
+  "markdown": "This domain is for use in documentation examples...",
+  "mode": "keyless",
+  "title": "Example Domain",
+  "extraction_source": "blend"
+}
+```
+
+`title`, `extraction_source`, and `site_name` are included when You.com returns them.
+
+**Example Response (Markdown)**
+
+```bash
+curl "http://localhost:3000/api/extract?url=https://example.com&format=markdown"
+```
+
+```text
+# Example Domain
+
+Source: https://example.com
+
+This domain is for use in documentation examples...
+```
+
+**Errors**
+
+Errors return `{ "error": "<code>", "message": "...", "retryable": true|false }`.
+
+| Status | `error`                                          | Meaning                                                                          |
+| ------ | ------------------------------------------------ | -------------------------------------------------------------------------------- |
+| `400`  | `No url provided`, `invalid_url`                 | The `url` parameter is missing, malformed, or not `http`/`https`                 |
+| `422`  | `no_content`, `invalid_url`, `unprocessable_url` | Nothing readable at that URL, or You.com cannot fetch it                         |
+| `429`  | `rate_limited`                                   | Rate limit reached. In keyless mode, add `YOU_API_KEY`                           |
+| `402`  | `payment_required`                               | The API key's account is out of credits                                          |
+| `502`  | `site_blocked`, `extract_failed`, others         | The page or the upstream API failed. Keyed mode passes on the You.com error code |
+| `504`  | `timeout`                                        | The page took too long. Safe to retry                                            |
+
+#### POST /api/extract
+
+Same as GET, with parameters in a JSON body:
+
+```bash
+curl -X POST "http://localhost:3000/api/extract" \
+  -H "Content-Type: application/json" \
+  -d '{"url": "https://example.com", "format": "markdown"}'
+```
+
+---
+
 ### Health Check
 
 Check if the service is running.
@@ -129,7 +210,8 @@ curl "http://localhost:3000/api/health"
 {
   "status": "healthy",
   "service": "YouSearch",
-  "api": "You.com Search API"
+  "api": "You.com Search API",
+  "mode": "keyless"
 }
 ```
 
@@ -171,21 +253,32 @@ Missing required parameters.
 }
 ```
 
-### 500 Internal Server Error
+### 429 Too Many Requests
 
-API configuration or request failure.
+The rate limit was reached. In keyless mode the message says how to lift it.
 
 ```json
 {
-  "error": "Configuration error",
-  "message": "API key is required. Set YOU_API_KEY environment variable..."
+  "error": "rate_limited",
+  "message": "Keyless free-tier limit reached. Add YOU_API_KEY for higher limits (free key at https://you.com/platform)."
+}
+```
+
+### 502 Bad Gateway
+
+The You.com API rejected the request or could not be reached. An invalid `YOU_API_KEY` shows up here.
+
+```json
+{
+  "error": "Search failed",
+  "message": "Invalid API key (401)"
 }
 ```
 
 ```json
 {
   "error": "Search failed",
-  "message": "Error querying You.com API: Network error"
+  "message": "Error querying You.com API: fetch failed"
 }
 ```
 

@@ -1,6 +1,19 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { YouSearchClient } from '@/lib/you-search';
+import { YouSearchClient, YouApiError } from '@/lib/you-search';
 import type { SearchOptions } from '@/lib/you-search';
+
+function errorResponse(error: unknown) {
+  const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+  const status = error instanceof YouApiError ? error.status : 500;
+
+  return NextResponse.json(
+    {
+      error: status === 429 ? 'rate_limited' : 'Search failed',
+      message: errorMessage,
+    },
+    { status }
+  );
+}
 
 function extractOptions(params: URLSearchParams): SearchOptions {
   const options: SearchOptions = {};
@@ -36,19 +49,8 @@ export async function GET(request: NextRequest) {
 
   const options = extractOptions(searchParams);
 
-  let client: YouSearchClient;
-  try {
-    client = new YouSearchClient();
-  } catch {
-    return NextResponse.json(
-      {
-        error: 'missing_api_key',
-        message:
-          'You.com API key is not configured. Add YOU_API_KEY to your .env.local file. Get a free key at https://you.com/platform',
-      },
-      { status: 503 }
-    );
-  }
+  // Uses YOU_API_KEY when it is set, otherwise the keyless free tier
+  const client = new YouSearchClient();
 
   try {
     const results = await client.search(query, options);
@@ -59,26 +61,23 @@ export async function GET(request: NextRequest) {
         status: 200,
         headers: {
           'Content-Type': 'text/plain; charset=utf-8',
+          'X-YouSearch-Mode': client.mode,
         },
       });
     }
 
-    // Flatten the response: { query, results: { web, news }, metadata }
-    return NextResponse.json({
-      query,
-      results: results.results || {},
-      metadata: results.metadata,
-    });
-  } catch (error) {
-    const errorMessage = error instanceof Error ? error.message : 'Unknown error';
-
+    // Flatten the response: { query, mode, results: { web, news }, metadata }
     return NextResponse.json(
       {
-        error: 'Search failed',
-        message: errorMessage,
+        query,
+        mode: client.mode,
+        results: results.results || {},
+        metadata: results.metadata,
       },
-      { status: 500 }
+      { headers: { 'X-YouSearch-Mode': client.mode } }
     );
+  } catch (error) {
+    return errorResponse(error);
   }
 }
 
@@ -108,19 +107,8 @@ export async function POST(request: NextRequest) {
     if (body.safesearch) bodyParams.set('safesearch', body.safesearch);
     const options = extractOptions(bodyParams);
 
-    let client: YouSearchClient;
-    try {
-      client = new YouSearchClient();
-    } catch {
-      return NextResponse.json(
-        {
-          error: 'missing_api_key',
-          message:
-            'You.com API key is not configured. Add YOU_API_KEY to your .env.local file. Get a free key at https://you.com/platform',
-        },
-        { status: 503 }
-      );
-    }
+    // Uses YOU_API_KEY when it is set, otherwise the keyless free tier
+    const client = new YouSearchClient();
 
     const results = await client.search(query, options);
 
@@ -130,24 +118,21 @@ export async function POST(request: NextRequest) {
         status: 200,
         headers: {
           'Content-Type': 'text/plain; charset=utf-8',
+          'X-YouSearch-Mode': client.mode,
         },
       });
     }
 
-    return NextResponse.json({
-      query,
-      results: results.results || {},
-      metadata: results.metadata,
-    });
-  } catch (error) {
-    const errorMessage = error instanceof Error ? error.message : 'Unknown error';
-
     return NextResponse.json(
       {
-        error: 'Search failed',
-        message: errorMessage,
+        query,
+        mode: client.mode,
+        results: results.results || {},
+        metadata: results.metadata,
       },
-      { status: 500 }
+      { headers: { 'X-YouSearch-Mode': client.mode } }
     );
+  } catch (error) {
+    return errorResponse(error);
   }
 }

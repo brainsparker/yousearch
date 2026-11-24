@@ -5,6 +5,7 @@ export function KeyboardHints() {
     <div className={styles.hints}>
       <span><kbd>j</kbd>/<kbd>k</kbd> navigate</span>
       <span><kbd>Enter</kbd> open</span>
+      <span><kbd>r</kbd> read</span>
       <span><kbd>/</kbd> search</span>
       <span><kbd>Esc</kbd> clear</span>
     </div>

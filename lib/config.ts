@@ -9,7 +9,7 @@
  * Configuration object containing all environment variables
  */
 export const config = {
-  /** You.com API key from environment */
+  /** You.com API key from environment (optional, keyless free tier when unset) */
   youApiKey: process.env.YOU_API_KEY,
   /** Current Node environment */
   nodeEnv: process.env.NODE_ENV || 'development',
@@ -20,18 +20,16 @@ export const config = {
 } as const;
 
 /**
- * Validates required environment variables
+ * Reports which You.com access path the app will use.
  *
- * @throws Error if YOU_API_KEY is not set
+ * YOU_API_KEY is optional. Without it the app runs on You.com's keyless free
+ * tier, which is rate limited. With it, requests use the keyed APIs.
  *
  * @example
  * ```typescript
- * // Call at app startup
- * validateEnv();
+ * if (searchMode() === 'keyless') console.warn('Running on the keyless free tier');
  * ```
  */
-export function validateEnv() {
-  if (!config.youApiKey) {
-    throw new Error('YOU_API_KEY environment variable is required');
-  }
+export function searchMode(): 'keyed' | 'keyless' {
+  return process.env.YOU_API_KEY?.trim() ? 'keyed' : 'keyless';
 }

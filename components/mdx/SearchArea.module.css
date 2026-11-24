@@ -61,45 +61,22 @@
   width: 100%;
 }
 
-.onboarding {
-  margin: 1.5rem 0;
-  padding: 0;
-  text-align: left;
-  font-family: var(--font-mono);
-}
-
-.onboarding h2 {
-  font-size: 0.875rem;
-  font-weight: 700;
-  color: var(--text-primary);
-  margin-bottom: 0.75rem;
-  font-family: var(--font-mono);
-}
-
-.onboarding p {
-  color: var(--text-secondary);
+.keylessNote {
+  margin: 1rem 0 0;
+  color: var(--text-tertiary);
   line-height: 1.7;
-  margin-bottom: 0.75rem;
-  font-size: 0.875rem;
+  font-size: 0.75rem;
   font-family: var(--font-mono);
 }
 
-.onboarding a {
+.keylessNote a,
+.keylessNote code {
   color: var(--accent);
   text-decoration: none;
 }
 
-.onboarding a:hover {
+.keylessNote a:hover {
   text-decoration: underline;
-}
-
-.onboardingHint {
-  font-size: 0.8125rem;
-  color: var(--text-tertiary);
-}
-
-.onboardingHint code {
-  color: var(--accent);
 }
 
 .helpOverlay {
